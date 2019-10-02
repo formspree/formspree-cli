@@ -33,6 +33,10 @@ const getDeployKey = args => {
   return process.env.STATICKIT_DEPLOY_KEY;
 };
 
+exports.command = ['deploy', '$0'];
+
+exports.describe = 'Performs a deployment';
+
 exports.builder = yargs => {
   yargs.option('config', {
     alias: 'c',
