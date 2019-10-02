@@ -3,6 +3,9 @@
   "version": "1.0.0-beta.0",
   "description": "The StaticKit command line interface",
   "main": "index.js",
+  "engines": {
+    "node": ">= 8"
+  },
   "scripts": {
     "test": "jest"
   },
