@@ -1,7 +1,8 @@
 const fs = require('fs');
 const chalk = require('chalk');
+const axios = require('axios');
 
-const readRawConfigSync = () => {
+const readConfigFromFile = () => {
   try {
     return fs.readFileSync('statickit.json', 'utf8');
   } catch (err) {
@@ -13,7 +14,7 @@ const readRawConfigSync = () => {
   }
 };
 
-const parseRawConfig = rawConfig => {
+const parseConfig = rawConfig => {
   try {
     const json = JSON.parse(rawConfig);
     return json;
@@ -22,24 +23,77 @@ const parseRawConfig = rawConfig => {
   }
 };
 
-exports.builder = {};
+const getConfig = args => {
+  if (args.config) return args.config;
+  return readConfigFromFile();
+};
 
-exports.handler = _args => {
-  const rawConfig = readRawConfigSync();
+const getDeployKey = args => {
+  if (args.key) return args.key;
+  return process.env.STATICKIT_DEPLOY_KEY;
+};
+
+exports.builder = yargs => {
+  yargs.option('config', {
+    alias: 'c',
+    describe: `Site config (overrides ${chalk.gray(
+      '`statickit.json`'
+    )} file contents)`
+  });
+
+  yargs.option('deploy-key', {
+    alias: 'k',
+    describe: `Deploy key (overrides ${chalk.gray(
+      '`STATICKIT_DEPLOY_KEY`'
+    )} env variable)`
+  });
+};
+
+exports.handler = async args => {
+  const rawConfig = getConfig(args);
 
   if (!rawConfig) {
-    console.error(chalk.bold.red('statickit.json does not exist'));
+    console.error(chalk.bold.red('Configuration not provided'));
     process.exitCode = 1;
     return;
   }
 
-  const config = parseRawConfig(rawConfig);
+  const config = parseConfig(rawConfig);
 
   if (!config) {
-    console.error(chalk.bold.red('statickit.json could not be parsed'));
+    console.error(chalk.bold.red('Configuration could not be parsed'));
     process.exitCode = 1;
     return;
   }
 
-  console.log(`Config: ${rawConfig}`);
+  const deployKey = getDeployKey(args);
+
+  if (!deployKey) {
+    console.error(chalk.bold.red('Deploy key not found'));
+    return;
+  }
+
+  try {
+    const response = await axios({
+      method: 'post',
+      url: 'https://api.statickit.com/cli/v1/deployments',
+      data: config,
+      headers: {
+        'StaticKit-Deploy-Key': deployKey,
+        'User-Agent': 'StaticKit CLI/1.0.0-beta.0'
+      },
+      validateStatus: status => status < 500
+    });
+
+    if (response.status == 200) {
+      console.log(chalk.bold.green('Deployment succeeded'));
+    } else if (response.status == 422) {
+      console.error(chalk.bold.red('Deployment failed with errors:'));
+      console.error(response.data.errors);
+    } else {
+      console.error(chalk.bold.red('Deployment failed'));
+    }
+  } catch (error) {
+    console.error(chalk.bold.red('Deployment failed'));
+  }
 };
