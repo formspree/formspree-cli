@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/unstacked/statickit-cli#readme",
   "dependencies": {
-    "args": "^5.0.1"
+    "yargs": "^14.0.0"
   }
 }
