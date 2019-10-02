@@ -99,5 +99,6 @@ exports.handler = async args => {
     }
   } catch (error) {
     console.error(chalk.bold.red('Deployment failed'));
+    throw error;
   }
 };
