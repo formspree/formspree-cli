@@ -1,0 +1,1 @@
+# StaticKit CLI
