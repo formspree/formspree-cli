@@ -91,13 +91,23 @@ exports.handler = async args => {
 
     spinner.stop();
 
-    if (response.status == 200) {
-      console.log(chalk.green('Deployment succeeded'));
-    } else if (response.status == 422) {
-      console.error(chalk.red('Deployment failed with errors:'));
-      console.error(response.data.errors);
-    } else {
-      console.error(chalk.red('Deployment failed'));
+    switch (response.status) {
+      case 200:
+        console.log(chalk.green('Deployment succeeded'));
+        return;
+
+      case 401:
+        console.error(chalk.red('Deploy key is not valid'));
+        return;
+
+      case 422:
+        console.error(chalk.red('Deployment failed with errors:'));
+        console.error(response.data.errors);
+        return;
+
+      default:
+        console.error(chalk.red('Deployment failed'));
+        return;
     }
   } catch (error) {
     spinner.stop();
