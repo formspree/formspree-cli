@@ -1,3 +1,11 @@
-test('adds 1 + 2 to equal 3', () => {
-  expect(1 + 2).toBe(3);
+const parser = require('../src/parser');
+
+it('returns help output', async () => {
+  const output = await new Promise(resolve => {
+    parser.parse('--help', (err, argv, output) => {
+      resolve(output);
+    });
+  });
+
+  expect(output).toMatch(/Performs a deployment/);
 });
