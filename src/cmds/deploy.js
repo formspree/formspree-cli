@@ -1,6 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const axios = require('axios');
+const ora = require('ora');
 
 const readConfigFromFile = () => {
   try {
@@ -40,21 +41,18 @@ exports.describe = 'Performs a deployment';
 exports.builder = yargs => {
   yargs.option('config', {
     alias: 'c',
-    describe: `Site config (overrides ${chalk.gray(
-      '`statickit.json`'
-    )} file contents)`
+    describe: `Site configuration`
   });
 
-  yargs.option('deploy-key', {
+  yargs.option('key', {
     alias: 'k',
-    describe: `Deploy key (overrides ${chalk.gray(
-      '`STATICKIT_DEPLOY_KEY`'
-    )} env variable)`
+    describe: `Deploy key`
   });
 };
 
 exports.handler = async args => {
   const rawConfig = getConfig(args);
+  const spinner = ora(chalk.gray('Deploying...'));
 
   if (!rawConfig) {
     console.error(chalk.bold.red('Configuration not provided'));
@@ -77,6 +75,8 @@ exports.handler = async args => {
     return;
   }
 
+  spinner.start();
+
   try {
     const response = await axios({
       method: 'post',
@@ -89,16 +89,19 @@ exports.handler = async args => {
       validateStatus: status => status < 500
     });
 
+    spinner.stop();
+
     if (response.status == 200) {
-      console.log(chalk.bold.green('Deployment succeeded'));
+      console.log(chalk.green('Deployment succeeded'));
     } else if (response.status == 422) {
-      console.error(chalk.bold.red('Deployment failed with errors:'));
+      console.error(chalk.red('Deployment failed with errors:'));
       console.error(response.data.errors);
     } else {
-      console.error(chalk.bold.red('Deployment failed'));
+      console.error(chalk.red('Deployment failed'));
     }
   } catch (error) {
-    console.error(chalk.bold.red('Deployment failed'));
+    spinner.stop();
+    console.error(chalk.red('Deployment failed'));
     throw error;
   }
 };
