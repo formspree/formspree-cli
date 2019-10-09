@@ -2,6 +2,8 @@ const execa = require('execa');
 const fs = require('fs').promises;
 require('dotenv').config();
 
+const validMinimumConfig = `{"site":{"name":"Test Suite"}}`;
+
 it('returns help output', async () => {
   const { stdout } = await execa('bin/statickit', ['--help']);
   expect(stdout).toMatch(/Performs a deployment/);
@@ -48,7 +50,7 @@ it('succeeds given valid params', async () => {
   const { stdout } = await execa('bin/statickit', [
     'deploy',
     '-c',
-    "'{}'",
+    validMinimumConfig,
     '-k',
     process.env.STATICKIT_TEST_DEPLOY_KEY
   ]);
@@ -56,14 +58,18 @@ it('succeeds given valid params', async () => {
 });
 
 it('accepts a deploy key from env', async () => {
-  const { stdout } = await execa('bin/statickit', ['deploy', '-c', "'{}'"], {
-    env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
-  });
+  const { stdout } = await execa(
+    'bin/statickit',
+    ['deploy', '-c', validMinimumConfig],
+    {
+      env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
+    }
+  );
   expect(stdout).toMatch(/Deployment succeeded/);
 });
 
 it('accepts a config from the statickit.json file', async () => {
-  await fs.writeFile('statickit.json', '{}', 'utf8');
+  await fs.writeFile('statickit.json', validMinimumConfig, 'utf8');
 
   const { stdout } = await execa('bin/statickit', ['deploy'], {
     env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
