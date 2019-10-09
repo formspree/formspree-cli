@@ -41,17 +41,23 @@ exports.describe = 'Performs a deployment';
 exports.builder = yargs => {
   yargs.option('config', {
     alias: 'c',
-    describe: `Site configuration`
+    describe: 'Site configuration'
   });
 
   yargs.option('key', {
     alias: 'k',
-    describe: `Deploy key`
+    describe: 'Deploy key'
+  });
+
+  yargs.option('endpoint', {
+    alias: 'e',
+    describe: 'API endpoint'
   });
 };
 
 exports.handler = async args => {
   const rawConfig = getConfig(args);
+  const endpoint = args.endpoint || 'https://api.statickit.com';
   const spinner = ora(chalk.gray('Deploying...'));
 
   if (!rawConfig) {
@@ -80,7 +86,7 @@ exports.handler = async args => {
   try {
     const response = await axios({
       method: 'post',
-      url: 'https://api.statickit.com/cli/v1/deployments',
+      url: `${endpoint}/cli/v1/deployments`,
       data: config,
       headers: {
         'StaticKit-Deploy-Key': deployKey,
