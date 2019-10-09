@@ -99,25 +99,31 @@ exports.handler = async args => {
 
     switch (response.status) {
       case 200:
-        console.log(chalk.green('Deployment succeeded'));
+        console.log(`--> ${chalk.green('Deployment succeeded')}`);
+        console.log(`${chalk.gray('id: ' + response.data.id)}`);
         return;
 
       case 401:
-        console.error(chalk.red('Deploy key is not valid'));
+        console.error(`--> ${chalk.red('Deploy key is not valid')}`);
         return;
 
       case 422:
-        console.error(chalk.red('Deployment failed with errors:'));
-        console.error(response.data.errors);
+        console.error(
+          `--> ${chalk.red('Deployment failed due to configuration errors')}`
+        );
+        console.log('');
+        console.table(response.data.errors);
+        console.log('');
+        console.log(`${chalk.gray('id: ' + response.data.id)}`);
         return;
 
       default:
-        console.error(chalk.red('Deployment failed'));
+        console.error(`--> ${chalk.red('Deployment failed')}`);
         return;
     }
   } catch (error) {
     spinner.stop();
-    console.error(chalk.red('Deployment failed'));
+    console.error(`--> ${chalk.red('Deployment failed unexpectedly')}`);
     throw error;
   }
 };
