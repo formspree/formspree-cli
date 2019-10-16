@@ -68,6 +68,33 @@ it('accepts a deploy key from env', async () => {
   expect(stdout).toMatch(/Deployment succeeded/);
 });
 
+it('accepts a deploy key from .env file', async () => {
+  let originalDotenv;
+
+  try {
+    originalDotenv = await fs.readFile('.env', 'utf8');
+  } catch (e) {
+    originalDotenv = '';
+  }
+
+  await fs.writeFile(
+    '.env',
+    `${originalDotenv}\nSTATICKIT_DEPLOY_KEY=${process.env.STATICKIT_TEST_DEPLOY_KEY}`,
+    'utf8'
+  );
+
+  const { stdout } = await execa('bin/statickit', [
+    'deploy',
+    '-c',
+    validMinimumConfig
+  ]);
+  expect(stdout).toMatch(/Deployment succeeded/);
+
+  if (originalDotenv !== '') {
+    await fs.writeFile('.env', originalDotenv, 'utf8');
+  }
+});
+
 it('accepts a config from the statickit.json file', async () => {
   await fs.writeFile('statickit.json', validMinimumConfig, 'utf8');
 
