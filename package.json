@@ -1,6 +1,6 @@
 {
   "name": "@statickit/cli",
-  "version": "1.0.0-beta.0",
+  "version": "0.1.0",
   "description": "The StaticKit command line interface",
   "main": "index.js",
   "bin": {
@@ -34,6 +34,24 @@
   },
   "devDependencies": {
     "execa": "^2.0.4",
-    "jest": "^24.9.0"
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.2",
+    "np": "^5.1.1",
+    "prettier": "^1.18.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "npx prettier --write",
+      "git add"
+    ]
+  },
+  "np": {
+    "yarn": false
   }
 }
