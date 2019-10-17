@@ -4,9 +4,9 @@ const axios = require('axios');
 const ora = require('ora');
 const version = require('../../package.json').version;
 
-const readConfigFromFile = () => {
+const readConfigFromFile = file => {
   try {
-    return fs.readFileSync('statickit.json', 'utf8');
+    return fs.readFileSync(file, 'utf8');
   } catch (err) {
     if (err.code === 'ENOENT') {
       return null;
@@ -27,7 +27,7 @@ const parseConfig = rawConfig => {
 
 const getConfig = args => {
   if (args.config) return args.config;
-  return readConfigFromFile();
+  return readConfigFromFile(args.file);
 };
 
 const getDeployKey = args => {
@@ -53,6 +53,12 @@ exports.builder = yargs => {
   yargs.option('endpoint', {
     alias: 'e',
     describe: 'API endpoint'
+  });
+
+  yargs.option('file', {
+    alias: 'A',
+    describe: 'Path to the local `statickit.json` file',
+    default: 'statickit.json'
   });
 };
 
