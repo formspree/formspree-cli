@@ -2,6 +2,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const axios = require('axios');
 const ora = require('ora');
+const version = require('../../package.json').version;
 
 const readConfigFromFile = () => {
   try {
@@ -90,7 +91,7 @@ exports.handler = async args => {
       data: config,
       headers: {
         'StaticKit-Deploy-Key': deployKey,
-        'User-Agent': 'StaticKit CLI/1.0.0-beta.0'
+        'User-Agent': `@statickit/cli@${version}`
       },
       validateStatus: status => status < 500
     });
