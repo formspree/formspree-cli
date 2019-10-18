@@ -2,29 +2,41 @@
   "name": "@statickit/cli",
   "version": "0.1.0",
   "description": "The StaticKit command line interface",
-  "main": "index.js",
-  "bin": {
-    "statickit": "bin/statickit"
-  },
-  "engines": {
-    "node": ">= 8"
-  },
-  "scripts": {
-    "test": "jest"
+  "keywords": [
+    "statickit"
+  ],
+  "homepage": "https://github.com/unstacked/statickit-cli#readme",
+  "bugs": {
+    "url": "https://github.com/unstacked/statickit-cli/issues"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/unstacked/statickit-cli.git"
   },
-  "keywords": [
-    "statickit"
-  ],
-  "author": "Derrick Reimer",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/unstacked/statickit-cli/issues"
+  "author": "Derrick Reimer",
+  "main": "index.js",
+  "bin": {
+    "statickit": "bin/statickit"
   },
-  "homepage": "https://github.com/unstacked/statickit-cli#readme",
+  "scripts": {
+    "test": "jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "npx prettier --write",
+      "git add"
+    ],
+    "package.json": [
+      "npx sort-package-json",
+      "git add"
+    ]
+  },
   "dependencies": {
     "axios": "^0.19.0",
     "chalk": "^2.4.2",
@@ -38,18 +50,11 @@
     "jest": "^24.9.0",
     "lint-staged": "^9.4.2",
     "np": "^5.1.1",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "sort-package-json": "^1.22.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,css,json,md}": [
-      "npx prettier --write",
-      "git add"
-    ]
+  "engines": {
+    "node": ">= 8"
   },
   "np": {
     "yarn": false
