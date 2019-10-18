@@ -1,39 +1,7 @@
-const fs = require('fs');
 const chalk = require('chalk');
-const axios = require('axios');
+const deploy = require('@statickit/deploy');
 const ora = require('ora');
 const version = require('../../package.json').version;
-
-const readConfigFromFile = file => {
-  try {
-    return fs.readFileSync(file, 'utf8');
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      return null;
-    } else {
-      throw err;
-    }
-  }
-};
-
-const parseConfig = rawConfig => {
-  try {
-    const json = JSON.parse(rawConfig);
-    return json;
-  } catch (err) {
-    return null;
-  }
-};
-
-const getConfig = args => {
-  if (args.config) return args.config;
-  return readConfigFromFile(args.file);
-};
-
-const getDeployKey = args => {
-  if (args.key) return args.key;
-  return process.env.STATICKIT_DEPLOY_KEY;
-};
 
 exports.command = ['deploy', '$0'];
 
@@ -63,8 +31,9 @@ exports.builder = yargs => {
 };
 
 exports.handler = async args => {
-  const rawConfig = getConfig(args);
+  const rawConfig = deploy.getRawConfig(args);
   const endpoint = args.endpoint || 'https://api.statickit.com';
+  const userAgent = `@statickit/cli@${version}`;
   const spinner = ora(chalk.gray('Deploying...'));
 
   if (!rawConfig) {
@@ -73,17 +42,19 @@ exports.handler = async args => {
     return;
   }
 
-  const config = parseConfig(rawConfig);
+  let config;
 
-  if (!config) {
+  try {
+    config = JSON.parse(rawConfig);
+  } catch (err) {
     console.error(chalk.bold.red('Configuration could not be parsed'));
     process.exitCode = 1;
     return;
   }
 
-  const deployKey = getDeployKey(args);
+  const key = deploy.getDeployKey(args);
 
-  if (!deployKey) {
+  if (!key) {
     console.error(chalk.bold.red('Deploy key not found'));
     return;
   }
@@ -91,15 +62,11 @@ exports.handler = async args => {
   spinner.start();
 
   try {
-    const response = await axios({
-      method: 'post',
-      url: `${endpoint}/cli/v1/deployments`,
-      data: config,
-      headers: {
-        'StaticKit-Deploy-Key': deployKey,
-        'User-Agent': `@statickit/cli@${version}`
-      },
-      validateStatus: status => status < 500
+    const response = await deploy.request({
+      endpoint,
+      config,
+      key,
+      userAgent
     });
 
     spinner.stop();
