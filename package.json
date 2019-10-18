@@ -57,6 +57,9 @@
   "engines": {
     "node": ">= 8"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "np": {
     "yarn": false
   }
