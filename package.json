@@ -1,6 +1,6 @@
 {
   "name": "@statickit/cli",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "The StaticKit command line interface",
   "keywords": [
     "statickit"
@@ -20,6 +20,7 @@
     "statickit": "bin/statickit"
   },
   "scripts": {
+    "release": "np",
     "test": "jest"
   },
   "husky": {
