@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "The StaticKit command line interface",
   "keywords": [
+    "dotenv",
     "statickit"
   ],
   "homepage": "https://github.com/unstacked/statickit-cli#readme",
