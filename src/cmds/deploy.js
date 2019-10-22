@@ -24,7 +24,6 @@ exports.builder = yargs => {
   });
 
   yargs.option('file', {
-    alias: 'A',
     describe: 'Path to the local `statickit.json` file',
     default: 'statickit.json'
   });

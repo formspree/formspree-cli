@@ -113,7 +113,7 @@ it('accepts a config from the statickit.json file', async () => {
 it('accepts a config from a custom file', async () => {
   await fs.writeFile(resolvePath('statickit-custom.json'), '{}', 'utf8');
 
-  const { stdout } = await command('deploy -A statickit-custom.json', {
+  const { stdout } = await command('deploy --file statickit-custom.json', {
     env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
   });
   expect(stdout).toMatch(/Deployment succeeded/);
