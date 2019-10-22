@@ -3,6 +3,19 @@ const fs = require('fs').promises;
 const path = require('path');
 require('dotenv').config();
 
+// Execute the `statickit` command from a `tmp` directory
+const command = async (args, opts) => {
+  return await execa.command(
+    `../bin/statickit ${args}`,
+    Object.assign({ cwd: 'tmp' }, opts)
+  );
+};
+
+// Resolve path to file in the working directory for the command
+const resolvePath = file => {
+  return path.resolve('tmp', file);
+};
+
 beforeEach(async () => {
   // Create a temp working directory, since some of the tests
   // need to create .env files and config files that might
@@ -15,22 +28,11 @@ afterEach(async () => {
 
   // Delete all the files in the temp directory
   for (const file of files) {
-    await fs.unlink(resolve(file));
+    await fs.unlink(resolvePath(file));
   }
 
   await fs.rmdir('tmp');
 });
-
-const command = async (args, opts) => {
-  return await execa.command(
-    `../bin/statickit ${args}`,
-    Object.assign({ cwd: 'tmp' }, opts)
-  );
-};
-
-const resolve = file => {
-  return path.resolve('tmp', file);
-};
 
 it('returns help output', async () => {
   const { stdout } = await command('--help');
@@ -90,7 +92,7 @@ it('accepts a deploy key from env', async () => {
 
 it('accepts a deploy key from .env file', async () => {
   await fs.writeFile(
-    resolve('.env'),
+    resolvePath('.env'),
     `STATICKIT_DEPLOY_KEY=${process.env.STATICKIT_TEST_DEPLOY_KEY}`,
     'utf8'
   );
@@ -100,7 +102,7 @@ it('accepts a deploy key from .env file', async () => {
 });
 
 it('accepts a config from the statickit.json file', async () => {
-  await fs.writeFile(resolve('statickit.json'), '{}', 'utf8');
+  await fs.writeFile(resolvePath('statickit.json'), '{}', 'utf8');
 
   const { stdout } = await command('deploy', {
     env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
@@ -109,7 +111,7 @@ it('accepts a config from the statickit.json file', async () => {
 });
 
 it('accepts a config from a custom file', async () => {
-  await fs.writeFile(resolve('statickit-custom.json'), '{}', 'utf8');
+  await fs.writeFile(resolvePath('statickit-custom.json'), '{}', 'utf8');
 
   const { stdout } = await command('deploy -A statickit-custom.json', {
     env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
