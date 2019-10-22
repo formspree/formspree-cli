@@ -70,23 +70,24 @@ it('returns an error if deploy key is invalid', async () => {
   try {
     await command(`deploy -c '{}' -k invalidkey`);
   } catch (result) {
-    console.log(result);
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toMatch(/Deploy key is not valid/);
   }
 });
 
 it('succeeds given valid params', async () => {
-  const { stdout } = await command(
+  const { stdout, exitCode } = await command(
     `deploy -c '{}' -k ${process.env.STATICKIT_TEST_DEPLOY_KEY}`
   );
+  expect(exitCode).toBe(0);
   expect(stdout).toMatch(/Deployment succeeded/);
 });
 
 it('accepts a deploy key from env', async () => {
-  const { stdout } = await command(`deploy -c '{}'`, {
+  const { stdout, exitCode } = await command(`deploy -c '{}'`, {
     env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
   });
+  expect(exitCode).toBe(0);
   expect(stdout).toMatch(/Deployment succeeded/);
 });
 
@@ -97,24 +98,43 @@ it('accepts a deploy key from .env file', async () => {
     'utf8'
   );
 
-  const { stdout } = await command(`deploy -c '{}'`);
+  const { stdout, exitCode } = await command(`deploy -c '{}'`);
+  expect(exitCode).toBe(0);
   expect(stdout).toMatch(/Deployment succeeded/);
 });
 
 it('accepts a config from the statickit.json file', async () => {
   await fs.writeFile(resolvePath('statickit.json'), '{}', 'utf8');
 
-  const { stdout } = await command('deploy', {
+  const { stdout, exitCode } = await command('deploy', {
     env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
   });
+  expect(exitCode).toBe(0);
   expect(stdout).toMatch(/Deployment succeeded/);
 });
 
 it('accepts a config from a custom file', async () => {
   await fs.writeFile(resolvePath('statickit-custom.json'), '{}', 'utf8');
 
-  const { stdout } = await command('deploy --file statickit-custom.json', {
-    env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
-  });
+  const { stdout, exitCode } = await command(
+    'deploy --file statickit-custom.json',
+    {
+      env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
+    }
+  );
+  expect(exitCode).toBe(0);
   expect(stdout).toMatch(/Deployment succeeded/);
+});
+
+it('fails given invalid params', async () => {
+  try {
+    await command(
+      `deploy -c '{"forms":{"a":{"name":""}}}' -k ${process.env.STATICKIT_TEST_DEPLOY_KEY}`
+    );
+  } catch (result) {
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toMatch(
+      /Deployment failed due to configuration errors/
+    );
+  }
 });

@@ -3,6 +3,10 @@ const deploy = require('@statickit/deploy');
 const ora = require('ora');
 const version = require('../../package.json').version;
 
+const setErrorExit = () => {
+  process.exitCode = 1;
+};
+
 exports.command = ['deploy', '$0'];
 
 exports.describe = 'Performs a deployment';
@@ -37,7 +41,7 @@ exports.handler = async args => {
 
   if (!rawConfig) {
     console.error(chalk.bold.red('Configuration not provided'));
-    process.exitCode = 1;
+    setErrorExit();
     return;
   }
 
@@ -47,7 +51,7 @@ exports.handler = async args => {
     config = JSON.parse(rawConfig);
   } catch (err) {
     console.error(chalk.bold.red('Configuration could not be parsed'));
-    process.exitCode = 1;
+    setErrorExit();
     return;
   }
 
@@ -55,6 +59,7 @@ exports.handler = async args => {
 
   if (!key) {
     console.error(chalk.bold.red('Deploy key not found'));
+    setErrorExit();
     return;
   }
 
@@ -78,6 +83,7 @@ exports.handler = async args => {
 
       case 401:
         console.error(`--> ${chalk.red('Deploy key is not valid')}`);
+        setErrorExit();
         return;
 
       case 422:
@@ -88,15 +94,18 @@ exports.handler = async args => {
         console.table(response.data.errors);
         console.log('');
         console.log(`${chalk.gray('id: ' + response.data.id)}`);
+        setErrorExit();
         return;
 
       default:
         console.error(`--> ${chalk.red('Deployment failed')}`);
+        setErrorExit();
         return;
     }
   } catch (error) {
     spinner.stop();
     console.error(`--> ${chalk.red('Deployment failed unexpectedly')}`);
+    setErrorExit();
     throw error;
   }
 };
