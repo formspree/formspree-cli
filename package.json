@@ -16,7 +16,6 @@
   },
   "license": "MIT",
   "author": "Derrick Reimer",
-  "main": "index.js",
   "bin": {
     "statickit": "bin/statickit"
   },
