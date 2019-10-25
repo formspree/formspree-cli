@@ -3,11 +3,13 @@ require('dotenv').config();
 const fs = require('fs');
 const execa = require('execa');
 const path = require('path');
+const { stripIndent } = require('common-tags');
 
 // Execute the `statickit` command from the sandbox directory
 const command = async (args, opts) => {
-  return await execa.command(
-    `../bin/statickit ${args}`,
+  return await execa(
+    '../bin/statickit',
+    args,
     Object.assign({ cwd: 'tmp' }, opts)
   );
 };
@@ -43,7 +45,7 @@ describe('init', () => {
       fs.readFileSync(path, 'utf8');
     }).toThrow(/no such file or directory/);
 
-    const { stdout } = await command('init');
+    const { stdout } = await command(['init']);
 
     expect(fs.readFileSync(path, 'utf8')).toMatch(/{}/);
     expect(stdout).toMatch(/statickit\.json created/);
@@ -54,17 +56,81 @@ describe('init', () => {
     const contents = '{"forms":{}}';
     fs.writeFileSync(path, contents);
 
-    const { stdout } = await command('init');
+    const { stdout } = await command(['init']);
 
     expect(fs.readFileSync(path, 'utf8')).toBe(contents);
     expect(stdout).toMatch(/statickit\.json already exists/);
   });
 });
 
+describe('forms add', () => {
+  it("creates a config file if one doesn't exist", async () => {
+    const path = resolveSandbox('statickit.json');
+    const result = await command(['forms', 'add', 'contact', 'Contact Form']);
+    expect(result.stdout).toMatch(/`contact` added/);
+
+    const expected = stripIndent`
+      {
+        "forms": {
+          "contact": {
+            "name": "Contact Form"
+          }
+        }
+      }
+    `;
+
+    const contents = fs.readFileSync(path, 'utf8');
+    expect(contents).toBe(expected);
+  });
+
+  it('appends to existing forms', async () => {
+    const path = resolveSandbox('statickit.json');
+    await command(['forms', 'add', 'contact', 'Contact Form']);
+    const result = await command(['forms', 'add', 'newsletter', 'Newsletter']);
+    expect(result.stdout).toMatch(/`newsletter` added/);
+
+    const expected = stripIndent`
+      {
+        "forms": {
+          "contact": {
+            "name": "Contact Form"
+          },
+          "newsletter": {
+            "name": "Newsletter"
+          }
+        }
+      }
+    `;
+
+    const contents = fs.readFileSync(path, 'utf8');
+    expect(contents).toBe(expected);
+  });
+
+  it('returns an error if key already exists', async () => {
+    const path = resolveSandbox('statickit.json');
+    await command(['forms', 'add', 'contact', 'Contact Form']);
+    const result = await command(['forms', 'add', 'contact', 'Duplicate Form']);
+    expect(result.stderr).toMatch(/`contact` already exists/);
+
+    const expected = stripIndent`
+      {
+        "forms": {
+          "contact": {
+            "name": "Contact Form"
+          }
+        }
+      }
+    `;
+
+    const contents = fs.readFileSync(path, 'utf8');
+    expect(contents).toBe(expected);
+  });
+});
+
 describe('deploy', () => {
   it('returns an error if no config is present', async () => {
     try {
-      await command('deploy');
+      await command(['deploy']);
     } catch (result) {
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toMatch(/Configuration not provided/);
@@ -78,7 +144,7 @@ describe('deploy', () => {
       'utf8'
     );
 
-    const { stdout, exitCode } = await command(`deploy -c '{}'`);
+    const { stdout, exitCode } = await command(['deploy', '-c', '{}']);
     expect(exitCode).toBe(0);
     expect(stdout).toMatch(/Deployment succeeded/);
   });
@@ -86,7 +152,7 @@ describe('deploy', () => {
   it('accepts a config from the statickit.json file', async () => {
     fs.writeFileSync(resolveSandbox('statickit.json'), '{}', 'utf8');
 
-    const { stdout, exitCode } = await command('deploy', {
+    const { stdout, exitCode } = await command(['deploy'], {
       env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
     });
     expect(exitCode).toBe(0);
@@ -97,7 +163,7 @@ describe('deploy', () => {
     fs.writeFileSync(resolveSandbox('statickit-custom.json'), '{}', 'utf8');
 
     const { stdout, exitCode } = await command(
-      'deploy --file statickit-custom.json',
+      ['deploy', '--file', 'statickit-custom.json'],
       {
         env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
       }
@@ -108,7 +174,7 @@ describe('deploy', () => {
 
   it('returns an error if config is unparsable', async () => {
     try {
-      await command(`deploy -c '{'`);
+      await command(['deploy', '-c', '{']);
     } catch (result) {
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toMatch(/Configuration could not be parsed/);
@@ -117,7 +183,7 @@ describe('deploy', () => {
 
   it('returns an error if deploy key is not found', async () => {
     try {
-      await command(`deploy -c '{}'`);
+      await command(['deploy', '-c', '{}']);
     } catch (result) {
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toMatch(/Deploy key not found/);
@@ -126,7 +192,7 @@ describe('deploy', () => {
 
   it('returns an error if deploy key is invalid', async () => {
     try {
-      await command(`deploy -c '{}' -k invalidkey`);
+      await command(['deploy', '-c', '{}', '-k', 'invalidkey']);
     } catch (result) {
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toMatch(/Deploy key is not valid/);
@@ -134,15 +200,19 @@ describe('deploy', () => {
   });
 
   it('succeeds given valid params', async () => {
-    const { stdout, exitCode } = await command(
-      `deploy -c '{}' -k ${process.env.STATICKIT_TEST_DEPLOY_KEY}`
-    );
+    const { stdout, exitCode } = await command([
+      'deploy',
+      '-c',
+      '{}',
+      '-k',
+      process.env.STATICKIT_TEST_DEPLOY_KEY
+    ]);
     expect(exitCode).toBe(0);
     expect(stdout).toMatch(/Deployment succeeded/);
   });
 
   it('accepts a deploy key from env', async () => {
-    const { stdout, exitCode } = await command(`deploy -c '{}'`, {
+    const { stdout, exitCode } = await command(['deploy', '-c', '{}'], {
       env: { STATICKIT_DEPLOY_KEY: process.env.STATICKIT_TEST_DEPLOY_KEY }
     });
     expect(exitCode).toBe(0);
@@ -151,9 +221,13 @@ describe('deploy', () => {
 
   it('fails given invalid params', async () => {
     try {
-      await command(
-        `deploy -c '{"forms":{"a":{"name":""}}}' -k ${process.env.STATICKIT_TEST_DEPLOY_KEY}`
-      );
+      await command([
+        'deploy',
+        '-c',
+        '{"forms":{"a":{"name":""}}}',
+        '-k',
+        process.env.STATICKIT_TEST_DEPLOY_KEY
+      ]);
     } catch (result) {
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toMatch(

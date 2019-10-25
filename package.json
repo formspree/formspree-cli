@@ -46,6 +46,7 @@
     "yargs": "^14.0.0"
   },
   "devDependencies": {
+    "common-tags": "^1.8.0",
     "execa": "^2.0.4",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
