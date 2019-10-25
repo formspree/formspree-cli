@@ -4,16 +4,10 @@ The command line interface for [StaticKit](https://statickit.com).
 
 ## Installation
 
-Run the following to install in your project:
+Run the following to install on your machine:
 
 ```bash
-npm install --save-dev @statickit/cli
-```
-
-Then, run the `statickit` command:
-
-```bash
-npx statickit deploy
+npm i -g @statickit/cli
 ```
 
 ## Releasing
