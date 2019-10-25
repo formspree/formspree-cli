@@ -2,17 +2,10 @@ const chalk = require('chalk');
 const deploy = require('@statickit/deploy');
 const ora = require('ora');
 const version = require('../../package.json').version;
+const { formatLine, formatError } = require('../output');
 
 const setErrorExit = () => {
   process.exitCode = 1;
-};
-
-const formatLine = str => {
-  return `${chalk.gray('>')} ${str}`;
-};
-
-const formatError = msg => {
-  return formatLine(chalk.red(msg));
 };
 
 exports.command = 'deploy';
