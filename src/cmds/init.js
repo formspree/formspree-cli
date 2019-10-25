@@ -4,7 +4,7 @@ const utils = require('../utils');
 exports.command = 'init';
 exports.desc = 'Creates a statickit.json file';
 exports.builder = {};
-exports.handler = function(args) {
+exports.handler = _args => {
   fs.writeFile('statickit.json', '{}', { flag: 'wx' }, function(err) {
     if (err) {
       utils.logSuccess('statickit.json already exists');
