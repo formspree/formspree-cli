@@ -5,7 +5,6 @@ const version = require('../../package.json').version;
 const utils = require('../utils');
 
 exports.command = 'deploy';
-
 exports.describe = 'Deploys statickit.json';
 
 exports.builder = yargs => {

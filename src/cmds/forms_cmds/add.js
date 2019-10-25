@@ -11,7 +11,7 @@ exports.builder = yargs => {
   });
 };
 
-exports.handler = function(args) {
+exports.handler = args => {
   const config = utils.readConfig(args.file);
   const forms = config.forms || (config.forms = {});
   const coloredKey = chalk.cyan(`\`${args.key}\``);
