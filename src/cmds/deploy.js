@@ -2,14 +2,10 @@ const chalk = require('chalk');
 const deploy = require('@statickit/deploy');
 const ora = require('ora');
 const version = require('../../package.json').version;
+const utils = require('../utils');
 
-const setErrorExit = () => {
-  process.exitCode = 1;
-};
-
-exports.command = ['deploy', '$0'];
-
-exports.describe = 'Performs a deployment';
+exports.command = 'deploy';
+exports.describe = 'Deploys statickit.json';
 
 exports.builder = yargs => {
   yargs.option('config', {
@@ -40,8 +36,8 @@ exports.handler = async args => {
   const spinner = ora(chalk.gray('Deploying...'));
 
   if (!rawConfig) {
-    console.error(chalk.bold.red('Configuration not provided'));
-    setErrorExit();
+    utils.logError('Configuration not provided');
+    process.exitCode = 1;
     return;
   }
 
@@ -50,16 +46,16 @@ exports.handler = async args => {
   try {
     config = JSON.parse(rawConfig);
   } catch (err) {
-    console.error(chalk.bold.red('Configuration could not be parsed'));
-    setErrorExit();
+    utils.logError('Configuration could not be parsed');
+    process.exitCode = 1;
     return;
   }
 
   const key = deploy.getDeployKey(args);
 
   if (!key) {
-    console.error(chalk.bold.red('Deploy key not found'));
-    setErrorExit();
+    utils.logError('Deploy key not found');
+    process.exitCode = 1;
     return;
   }
 
@@ -77,35 +73,33 @@ exports.handler = async args => {
 
     switch (response.status) {
       case 200:
-        console.log(`--> ${chalk.green('Deployment succeeded')}`);
-        console.log(`${chalk.gray('id: ' + response.data.id)}`);
+        utils.logSuccess('Deployment succeeded');
+        utils.logMeta(`id: ${response.data.id}`);
         return;
 
       case 401:
-        console.error(`--> ${chalk.red('Deploy key is not valid')}`);
-        setErrorExit();
+        utils.logError('Deploy key is not valid');
+        process.exitCode = 1;
         return;
 
       case 422:
-        console.error(
-          `--> ${chalk.red('Deployment failed due to configuration errors')}`
-        );
+        utils.logError('Deployment failed due to configuration errors');
         console.log('');
         console.table(response.data.errors);
         console.log('');
-        console.log(`${chalk.gray('id: ' + response.data.id)}`);
-        setErrorExit();
+        utils.logMeta(`id: ${response.data.id}`);
+        process.exitCode = 1;
         return;
 
       default:
-        console.error(`--> ${chalk.red('Deployment failed')}`);
-        setErrorExit();
+        utils.logError('Deployment failed');
+        process.exitCode = 1;
         return;
     }
   } catch (error) {
     spinner.stop();
-    console.error(`--> ${chalk.red('Deployment failed unexpectedly')}`);
-    setErrorExit();
+    utils.logError('Deployment failed unexpectedly');
+    process.exitCode = 1;
     throw error;
   }
 };
