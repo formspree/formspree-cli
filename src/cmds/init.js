@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const fs = require('fs');
 const utils = require('../utils');
 
