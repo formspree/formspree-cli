@@ -1,3 +1,6 @@
 require('dotenv').config();
-const parser = require('./parser');
-parser.argv;
+
+require('yargs')
+  .commandDir('cmds')
+  .demandCommand()
+  .help().argv;
