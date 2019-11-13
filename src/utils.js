@@ -6,6 +6,10 @@ const withCaret = str => {
   return `${chalk.gray('>')} ${str}`;
 };
 
+const withX = str => {
+  return `${chalk.red.bold('✕')} ${str}`;
+};
+
 /**
  * Logs a green success message to stdout.
  *
@@ -39,7 +43,7 @@ const logMeta = msg => {
  * @param {string} msg
  */
 const logError = msg => {
-  return console.error(withCaret(chalk.red(msg)));
+  return console.error(withX(chalk.red.bold(msg)));
 };
 
 /**

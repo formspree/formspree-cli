@@ -1,6 +1,7 @@
 const deploy = require('@statickit/deploy');
 const axios = require('axios');
 const utils = require('../../utils');
+const messages = require('../../messages');
 const version = require('../../../package.json').version;
 
 const humanizeField = name => {
@@ -37,7 +38,7 @@ exports.handler = async args => {
   utils.preamble();
 
   if (!deployKey) {
-    utils.logError('Deploy key not found');
+    messages.logAuthRequired();
     process.exitCode = 1;
     return;
   }

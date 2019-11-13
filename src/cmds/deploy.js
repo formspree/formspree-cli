@@ -3,6 +3,7 @@ const deploy = require('@statickit/deploy');
 const ora = require('ora');
 const version = require('../../package.json').version;
 const utils = require('../utils');
+const messages = require('../messages');
 
 exports.command = 'deploy';
 exports.describe = 'Deploys statickit.json';
@@ -56,7 +57,7 @@ exports.handler = async args => {
   const key = deploy.getDeployKey(args);
 
   if (!key) {
-    utils.logError('Deploy key not found');
+    messages.logAuthRequired();
     process.exitCode = 1;
     return;
   }
