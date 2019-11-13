@@ -1,5 +1,5 @@
 exports.command = 'forms <command>';
-exports.desc = 'Helpers for managing forms';
+exports.desc = 'Manage form resources';
 exports.builder = yargs => {
   return yargs.commandDir('forms_cmds');
 };

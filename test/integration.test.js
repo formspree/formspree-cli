@@ -67,7 +67,7 @@ describe('forms add', () => {
   it("creates a config file if one doesn't exist", async () => {
     const path = resolveSandbox('statickit.json');
     const result = await command(['forms', 'add', 'contact', 'Contact Form']);
-    expect(result.stdout).toMatch(/`contact` added/);
+    expect(result.stdout).toMatch(/added/);
 
     const expected = stripIndent`
       {
@@ -87,7 +87,7 @@ describe('forms add', () => {
     const path = resolveSandbox('statickit.json');
     await command(['forms', 'add', 'contact', 'Contact Form']);
     const result = await command(['forms', 'add', 'newsletter', 'Newsletter']);
-    expect(result.stdout).toMatch(/`newsletter` added/);
+    expect(result.stdout).toMatch(/added/);
 
     const expected = stripIndent`
       {
@@ -110,7 +110,7 @@ describe('forms add', () => {
     const path = resolveSandbox('statickit.json');
     await command(['forms', 'add', 'contact', 'Contact Form']);
     const result = await command(['forms', 'add', 'contact', 'Duplicate Form']);
-    expect(result.stderr).toMatch(/`contact` already exists/);
+    expect(result.stderr).toMatch(/already exists/);
 
     const expected = stripIndent`
       {
@@ -186,7 +186,7 @@ describe('deploy', () => {
       await command(['deploy', '-c', '{}']);
     } catch (result) {
       expect(result.exitCode).toBe(1);
-      expect(result.stderr).toMatch(/Deploy key not found/);
+      expect(result.stderr).toMatch(/Deploy key is required/);
     }
   });
 

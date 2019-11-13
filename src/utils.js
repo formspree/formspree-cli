@@ -1,36 +1,4 @@
-const chalk = require('chalk');
 const fs = require('fs');
-
-const withCaret = str => {
-  return `${chalk.gray('>')} ${str}`;
-};
-
-/**
- * Logs a green success message to stdout.
- *
- * @param {string} msg
- */
-const logSuccess = msg => {
-  return console.log(withCaret(chalk.green(msg)));
-};
-
-/**
- * Logs a subtle gray message to stdout.
- *
- * @param {string} msg
- */
-const logMeta = msg => {
-  return console.log(withCaret(chalk.gray(msg)));
-};
-
-/**
- * Logs a red error message to stderr.
- *
- * @param {string} msg
- */
-const logError = msg => {
-  return console.error(withCaret(chalk.red(msg)));
-};
 
 /**
  * Reads a config file and parses it's contents as JSON.
@@ -63,4 +31,7 @@ const writeConfig = (file, config) => {
   fs.writeFileSync(file, JSON.stringify(config, null, 2));
 };
 
-module.exports = { logSuccess, logMeta, logError, readConfig, writeConfig };
+module.exports = {
+  readConfig,
+  writeConfig
+};
