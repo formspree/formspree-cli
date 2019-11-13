@@ -1,66 +1,4 @@
-const chalk = require('chalk');
 const fs = require('fs');
-const version = require('../package.json').version;
-
-const withCaret = str => {
-  return `${chalk.gray('>')} ${str}`;
-};
-
-const withX = str => {
-  return `${chalk.red.bold('✕')} ${str}`;
-};
-
-/**
- * Logs a green success message to stdout.
- *
- * @param {string} msg
- */
-const logSuccess = msg => {
-  return console.log(withCaret(chalk.green(msg)));
-};
-
-/**
- * Logs a progress message to stdout.
- *
- * @param {string} msg
- */
-const logProgress = msg => {
-  return console.log(withCaret(chalk.whiteBright(msg)));
-};
-
-/**
- * Logs a subtle gray message to stdout.
- *
- * @param {string} msg
- */
-const logMeta = msg => {
-  return console.log(withCaret(chalk.gray(msg)));
-};
-
-/**
- * Logs a red error message to stderr.
- *
- * @param {string} msg
- */
-const logError = msg => {
-  return console.error(withX(chalk.red.bold(msg)));
-};
-
-/**
- * Logs the CLI preamble message.
- */
-const preamble = () => {
-  return logMeta(`StaticKit CLI v${version}`);
-};
-
-/**
- * Colorizes a variable for display.
- *
- * @param {string} val
- */
-const colorVariable = val => {
-  return chalk.cyan.bold(`\`${val}\``);
-};
 
 /**
  * Reads a config file and parses it's contents as JSON.
@@ -94,12 +32,6 @@ const writeConfig = (file, config) => {
 };
 
 module.exports = {
-  logSuccess,
-  logProgress,
-  logMeta,
-  logError,
-  preamble,
-  colorVariable,
   readConfig,
   writeConfig
 };

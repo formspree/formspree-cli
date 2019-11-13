@@ -1,5 +1,5 @@
-const chalk = require('chalk');
 const utils = require('../../utils');
+const log = require('../../log');
 
 exports.command = 'add <key> <name>';
 exports.desc = 'Adds a new form to config';
@@ -14,13 +14,12 @@ exports.builder = yargs => {
 exports.handler = args => {
   const config = utils.readConfig(args.file);
   const forms = config.forms || (config.forms = {});
-  const coloredKey = chalk.cyan(`\`${args.key}\``);
 
   if (forms[args.key]) {
-    utils.logError(`${coloredKey} already exists`);
+    log.error(`${log.variable(args.key)} already exists`);
   } else {
     forms[args.key] = { name: args.name };
     utils.writeConfig(args.file, config);
-    utils.logSuccess(`${coloredKey} added`);
+    log.success(`${log.variable(args.key)} added`);
   }
 };

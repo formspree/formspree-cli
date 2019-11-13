@@ -1,6 +1,6 @@
 const deploy = require('@statickit/deploy');
 const axios = require('axios');
-const utils = require('../../utils');
+const log = require('../../log');
 const messages = require('../../messages');
 const version = require('../../../package.json').version;
 
@@ -35,17 +35,15 @@ exports.handler = async args => {
   const endpoint = args.endpoint || 'https://api.statickit.com';
   const userAgent = `@statickit/cli@${version}`;
 
-  utils.preamble();
+  log.preamble();
 
   if (!deployKey) {
-    messages.logAuthRequired();
+    messages.authRequired();
     process.exitCode = 1;
     return;
   }
 
-  utils.logProgress(
-    `Adding ${utils.colorVariable(args.name)} to your secrets...`
-  );
+  log.progress(`Adding ${log.variable(args.name)} to your secrets...`);
 
   try {
     const response = await axios({
@@ -64,11 +62,11 @@ exports.handler = async args => {
 
     switch (response.status) {
       case 200:
-        utils.logSuccess(`${coloredName} added to secrets`);
+        log.success(`${coloredName} added to secrets`);
         return;
 
       case 401:
-        utils.logError('Deploy key is not valid');
+        log.error('Deploy key is not valid');
         process.exitCode = 1;
         return;
 
@@ -78,11 +76,11 @@ exports.handler = async args => {
             error.field == 'key' &&
             error.message == 'has already been taken'
           ) {
-            utils.logError(
+            log.error(
               'This secret already exists. Use `statickit secrets update` to update it.'
             );
           } else {
-            utils.logError(`${humanizeField(error.field)} ${error.message}`);
+            log.error(`${humanizeField(error.field)} ${error.message}`);
           }
         });
 
@@ -90,7 +88,7 @@ exports.handler = async args => {
         return;
     }
   } catch (error) {
-    utils.logError('Request failed unexpectedly');
+    log.error('Request failed unexpectedly');
     process.exitCode = 1;
     throw error;
   }

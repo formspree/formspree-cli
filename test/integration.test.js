@@ -186,7 +186,7 @@ describe('deploy', () => {
       await command(['deploy', '-c', '{}']);
     } catch (result) {
       expect(result.exitCode).toBe(1);
-      expect(result.stderr).toMatch(/Deploy key not found/);
+      expect(result.stderr).toMatch(/Deploy key is required/);
     }
   });
 
