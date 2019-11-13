@@ -6,7 +6,7 @@ const withCaret = str => {
 };
 
 const withCheck = str => {
-  return `${chalk.green.bold('✔')} ${str}`;
+  return `${chalk.green('✔')} ${str}`;
 };
 
 const withX = str => {
@@ -62,7 +62,7 @@ const preamble = () => {
  * @param {string} val
  */
 const variable = val => {
-  return chalk.cyan.bold(`\`${val}\``);
+  return chalk.cyan.bold(`${val}`);
 };
 
 module.exports = { success, progress, meta, error, preamble, variable };

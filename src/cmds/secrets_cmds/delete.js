@@ -49,9 +49,6 @@ exports.handler = async args => {
     const response = await axios({
       method: 'delete',
       url: `${endpoint}/cli/v1/secrets/${args.name}`,
-      data: {
-        value: args.value
-      },
       headers: {
         'StaticKit-Deploy-Key': deployKey,
         'User-Agent': userAgent
