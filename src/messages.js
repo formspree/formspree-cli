@@ -48,4 +48,22 @@ const secretAlreadyExists = (name, value, key) => {
   console.error('');
 };
 
-module.exports = { authRequired, secretAlreadyExists };
+const secretKeyInvalid = () => {
+  log.error('Name is invalid');
+  console.error('');
+
+  // prettier-ignore
+  console.error(stripIndent`
+    Secret names can contain letters, numbers, and dashes. 
+    You should typically use kebab-case.
+
+    ${chalk.yellow.bold('-- Examples -----------------------------------------------')}
+      
+      ${chalk.gray('mailchimp-api-key')}
+      ${chalk.gray('stripe-secret-key')}
+  `);
+
+  console.error('');
+};
+
+module.exports = { authRequired, secretAlreadyExists, secretKeyInvalid };

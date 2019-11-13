@@ -77,6 +77,8 @@ exports.handler = async args => {
             error.message == 'has already been taken'
           ) {
             messages.secretAlreadyExists(args.name, args.value, deployKey);
+          } else if (error.code == 'FORMAT' && error.field == 'key') {
+            messages.secretKeyInvalid();
           } else {
             log.error(`${humanizeField(error.field)} ${error.message}`);
           }
