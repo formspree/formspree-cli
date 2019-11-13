@@ -34,4 +34,18 @@ const authRequired = () => {
   console.error('');
 };
 
-module.exports = { authRequired };
+const secretAlreadyExists = (name, value, key) => {
+  log.error('Secret already exists');
+  console.error('');
+
+  // prettier-ignore
+  console.error(stripIndent`
+    If you'd like to update it, run the following command instead:
+
+      ${chalk.gray('$')} statickit secrets update ${name} ${value} -k ${key}
+  `);
+
+  console.error('');
+};
+
+module.exports = { authRequired, secretAlreadyExists };

@@ -62,7 +62,7 @@ exports.handler = async args => {
 
     switch (response.status) {
       case 200:
-        log.success(`${coloredName} added to secrets`);
+        log.success(`Secret added`);
         return;
 
       case 401:
@@ -76,9 +76,7 @@ exports.handler = async args => {
             error.field == 'key' &&
             error.message == 'has already been taken'
           ) {
-            log.error(
-              'This secret already exists. Use `statickit secrets update` to update it.'
-            );
+            messages.secretAlreadyExists(args.name, args.value, deployKey);
           } else {
             log.error(`${humanizeField(error.field)} ${error.message}`);
           }

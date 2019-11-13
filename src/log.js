@@ -5,6 +5,10 @@ const withCaret = str => {
   return `${chalk.gray('>')} ${str}`;
 };
 
+const withCheck = str => {
+  return `${chalk.green.bold('✔')} ${str}`;
+};
+
 const withX = str => {
   return `${chalk.red.bold('✕')} ${str}`;
 };
@@ -15,7 +19,7 @@ const withX = str => {
  * @param {string} msg
  */
 const success = msg => {
-  console.log(withCaret(chalk.green(msg)));
+  console.log(withCheck(chalk.green(msg)));
 };
 
 /**
