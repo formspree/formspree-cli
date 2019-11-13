@@ -18,13 +18,13 @@ const authRequired = () => {
 
     The inline method looks like this:
 
-      ${chalk.gray('$')} statickit deploy ${chalk.cyan('-k')} c4cf8a3b6cc15b9ea0817e4fa00cb036
+      ${chalk.gray('$')} statickit deploy ${chalk.cyan('-k')} ${chalk.yellow('<your-deploy-key>')}
 
     For convenience, you can add it to a ${log.variable('.env')} file.
     That way, you don't have to copy/paste it every time
     you run a command:
 
-      ${chalk.gray('$')} echo "${chalk.gray('STATICKIT_DEPLOY_KEY=c4cf8a3b6cc...')}" >> .env
+      ${chalk.gray('$')} echo "STATICKIT_DEPLOY_KEY=${chalk.yellow('<your-deploy-key>')}" >> .env
       ${chalk.gray('$')} statickit deploy
 
     Just be sure to add ${log.variable('.env')} to your ${log.variable('.gitignore')} file,
