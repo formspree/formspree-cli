@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const fs = require('fs');
+const version = require('../package.json').version;
 
 const withCaret = str => {
   return `${chalk.gray('>')} ${str}`;
@@ -12,6 +13,15 @@ const withCaret = str => {
  */
 const logSuccess = msg => {
   return console.log(withCaret(chalk.green(msg)));
+};
+
+/**
+ * Logs a progress message to stdout.
+ *
+ * @param {string} msg
+ */
+const logProgress = msg => {
+  return console.log(withCaret(chalk.whiteBright(msg)));
 };
 
 /**
@@ -30,6 +40,22 @@ const logMeta = msg => {
  */
 const logError = msg => {
   return console.error(withCaret(chalk.red(msg)));
+};
+
+/**
+ * Logs the CLI preamble message.
+ */
+const preamble = () => {
+  return logMeta(`StaticKit CLI v${version}`);
+};
+
+/**
+ * Colorizes a variable for display.
+ *
+ * @param {string} val
+ */
+const colorVariable = val => {
+  return chalk.cyan.bold(`\`${val}\``);
 };
 
 /**
@@ -63,4 +89,13 @@ const writeConfig = (file, config) => {
   fs.writeFileSync(file, JSON.stringify(config, null, 2));
 };
 
-module.exports = { logSuccess, logMeta, logError, readConfig, writeConfig };
+module.exports = {
+  logSuccess,
+  logProgress,
+  logMeta,
+  logError,
+  preamble,
+  colorVariable,
+  readConfig,
+  writeConfig
+};
