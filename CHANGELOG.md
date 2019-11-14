@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+- Move `common-tags` to regular dependencies.
+
 ## 0.3.0
 
 - Add `secrets {add|update|delete}` commands.
