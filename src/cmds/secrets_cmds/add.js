@@ -37,7 +37,7 @@ exports.handler = async args => {
 
   if (!deployKey) {
     messages.authRequired();
-    // process.exitCode = 1;
+    process.exitCode = 1;
     return;
   }
 
