@@ -49,7 +49,7 @@ const secretAlreadyExists = (name, value, key) => {
 };
 
 const secretKeyInvalid = () => {
-  log.error('Name is invalid');
+  log.error('Secret name is invalid');
   console.error('');
 
   // prettier-ignore
