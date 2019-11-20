@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+- Add version check.
+- Better error messages for missing secrets.
+- Update `yargs`.
+
 ## 0.4.0
 
 - Move `common-tags` to regular dependencies.
