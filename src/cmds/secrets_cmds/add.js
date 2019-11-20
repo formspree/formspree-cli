@@ -35,11 +35,9 @@ exports.handler = async args => {
   const endpoint = args.endpoint || 'https://api.statickit.com';
   const userAgent = `@statickit/cli@${version}`;
 
-  log.preamble();
-
   if (!deployKey) {
     messages.authRequired();
-    process.exitCode = 1;
+    // process.exitCode = 1;
     return;
   }
 

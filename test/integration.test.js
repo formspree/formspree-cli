@@ -230,9 +230,7 @@ describe('deploy', () => {
       ]);
     } catch (result) {
       expect(result.exitCode).toBe(1);
-      expect(result.stderr).toMatch(
-        /Deployment failed due to configuration errors/
-      );
+      expect(result.stderr).toMatch(/Deployment failed/);
     }
   });
 });

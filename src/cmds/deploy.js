@@ -108,8 +108,6 @@ exports.handler = async args => {
   const userAgent = `@statickit/cli@${version}`;
   const spinner = ora(chalk.gray('Deploying...'));
 
-  log.preamble();
-
   if (!rawConfig) {
     log.error('Configuration not provided');
     process.exitCode = 1;
