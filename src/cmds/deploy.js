@@ -31,14 +31,43 @@ const printError = (error, idx) => {
 };
 
 const errorMessage = error => {
+  let title;
+  let body;
+
   switch (error.code) {
+    case 'SECRET_REFERENCE_REQUIRED':
+      let fieldName = error.field.split('.').slice(-1)[0];
+      let exampleValue = error.properties.example_value;
+      let givenValue = error.properties.given_value || 'pa$$w0rd';
+
+      // prettier-ignore
+      title = `${log.variable(error.field)} must reference a secret (e.g. ${log.variable(`@${exampleValue}`)})`;
+
+      // prettier-ignore
+      body = stripIndent`
+        This field must reference a secret instead of a raw value, 
+        because it's too sensitive to commit to version control.
+
+        ${chalk.yellow.bold('-- Instructions ----------------------------------------------------------')}
+
+        First, choose a name for this value and run the following command:
+
+            ${chalk.gray('$')} statickit secrets add ${chalk.cyan(`${exampleValue}`)} ${chalk.green(`"${givenValue}"`)}
+
+        Then, reference your secret like this (notice the @-symbol prefix):
+
+            {
+              ${chalk.green(`"${fieldName}"`)}: ${chalk.green(`"@${exampleValue}"`)}
+            }
+      `;
+      break;
+
     case 'SECRET_REQUIRED':
       // prettier-ignore
-      var title = `The secret ${log.variable('@' + error.properties.key)} is not defined yet ${chalk.gray(`(${error.field})`)}`;
-      let body;
+      title = `The secret ${log.variable('@' + error.properties.secret_key)} is not defined yet ${chalk.gray(`(${error.field})`)}`;
 
-      switch (error.properties.app) {
-        case 'mailchimp':
+      switch (error.properties.secret_type) {
+        case 'mailchimp_api_key':
           // prettier-ignore
           body = stripIndent`
             Here's where to find your API key:
@@ -50,7 +79,7 @@ const errorMessage = error => {
 
             Copy the generated key and run the following command:
 
-              ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.key)} ${chalk.yellow('<paste-api-key-here>')}
+              ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.secret_key)} ${chalk.yellow('<paste-api-key-here>')}
 
             Then, try deploying again.
           `;
@@ -62,19 +91,20 @@ const errorMessage = error => {
           body = stripIndent`
             Run the following command to add this secret:
 
-              ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.key)} ${chalk.yellow('<enter-the-value-here>')}
+              ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.secret_key)} ${chalk.yellow('<enter-the-value-here>')}
 
             Then, try deploying again.
           `;
           break;
       }
 
-      return [title, body];
-
     default:
-      var title = `${chalk.cyan(error.field)} ${error.message}`;
-      return [title, ''];
+      title = `${chalk.cyan(error.field)} ${error.message}`;
+      body = '';
+      break;
   }
+
+  return [title, body];
 };
 
 exports.command = 'deploy';
