@@ -14,9 +14,9 @@ const indent = (text, depth = 2) => {
 };
 
 const printErrors = errors => {
-  console.log('');
+  console.error('');
   errors.forEach(printError);
-  console.log('');
+  console.error('');
 };
 
 const printError = (error, idx) => {
@@ -97,6 +97,8 @@ const errorMessage = error => {
           `;
           break;
       }
+
+      break;
 
     default:
       title = `${chalk.cyan(error.field)} ${error.message}`;
