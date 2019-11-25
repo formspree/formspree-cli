@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+- Improve helpfulness of error messages.
+
 ## 0.5.0
 
 - Add version check.
