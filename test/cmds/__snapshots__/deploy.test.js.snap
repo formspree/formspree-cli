@@ -17,7 +17,7 @@ Array [
 ]
 `;
 
-exports[`displays instructions for a missing mailchimp api keys 1`] = `
+exports[`displays instructions for a missing mailchimp api key 1`] = `
 Array [
   Array [
     "[31m[1m✕[22m[39m [31m[1mDeployment failed [90m(xxxx-xxxx-xxxx)[31m[22m[39m",
@@ -41,9 +41,49 @@ Array [
        
        Copy the generated key and run the following command:
        
-         [90m$[39m statickit secrets add [36mmy-mailchimp-key[39m [33m<paste-api-key-here>[39m
+         [90m$[39m statickit secrets add [36mmy-mailchimp-key[39m [33m<paste-api-key-here>[39m",
+  ],
+  Array [
+    "",
+  ],
+  Array [
+    "",
+  ],
+  Array [
+    "",
+  ],
+]
+`;
+
+exports[`displays instructions for a missing mailchimp audience 1`] = `
+Array [
+  Array [
+    "[31m[1m✕[22m[39m [31m[1mDeployment failed [90m(xxxx-xxxx-xxxx)[31m[22m[39m",
+  ],
+  Array [
+    "",
+  ],
+  Array [
+    "  1) The secret [36m[1m@my-mailchimp-audience[22m[39m is not defined yet [90m(actions[0].audience)[39m",
+  ],
+  Array [
+    "",
+  ],
+  Array [
+    "       Here's how to found your Audience ID:
        
-       Then, try deploying again.",
+         • Log in to your Mailchimp account
+         • Click the [1m[36mAudience[39m[22m tab at the top
+         • Navigate to [1m[36mManage Audience › Settings[39m[22m
+         • Click [1m[36mAudience name and defaults[39m[22m
+         • Locate the value under the \\"Audience ID\\" heading
+       
+       Copy the ID and run the following command:
+       
+         [90m$[39m statickit secrets add [36mmy-mailchimp-audience[39m [33m<paste-audience-id-here>[39m",
+  ],
+  Array [
+    "",
   ],
   Array [
     "",
@@ -83,6 +123,9 @@ Array [
            {
              [32m\\"apiKey\\"[39m: [32m\\"@mailchimp-api-key\\"[39m
            }",
+  ],
+  Array [
+    "",
   ],
   Array [
     "",

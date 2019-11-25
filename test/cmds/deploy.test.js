@@ -35,7 +35,7 @@ it('sends a deploy request with the right params', async () => {
   expect(console.log.mock.calls).toMatchSnapshot();
 });
 
-it('displays instructions for a missing mailchimp api keys', async () => {
+it('displays instructions for a missing mailchimp api key', async () => {
   const config = {};
   const args = { config: JSON.stringify(config), key: 'xxx' };
 
@@ -55,6 +55,37 @@ it('displays instructions for a missing mailchimp api keys', async () => {
             properties: {
               secret_type: 'mailchimp_api_key',
               secret_key: 'my-mailchimp-key'
+            }
+          }
+        ]
+      }
+    });
+  });
+
+  await cmd.handler(args);
+  expect(console.error.mock.calls).toMatchSnapshot();
+});
+
+it('displays instructions for a missing mailchimp audience', async () => {
+  const config = {};
+  const args = { config: JSON.stringify(config), key: 'xxx' };
+
+  deploy.getRawConfig.mockImplementation(args => args.config);
+  deploy.getDeployKey.mockImplementation(args => args.key);
+
+  deploy.request.mockImplementation(_params => {
+    return Promise.resolve({
+      status: 422,
+      data: {
+        id: 'xxxx-xxxx-xxxx',
+        errors: [
+          {
+            code: 'SECRET_REQUIRED',
+            field: 'actions[0].audience',
+            message: 'is required',
+            properties: {
+              secret_type: 'mailchimp_audience',
+              secret_key: 'my-mailchimp-audience'
             }
           }
         ]

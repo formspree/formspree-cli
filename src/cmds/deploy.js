@@ -27,6 +27,7 @@ const printError = (error, idx) => {
     console.error('');
     console.error(indent(body, 7));
     console.error('');
+    console.error('');
   }
 };
 
@@ -80,8 +81,24 @@ const errorMessage = error => {
             Copy the generated key and run the following command:
 
               ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.secret_key)} ${chalk.yellow('<paste-api-key-here>')}
+          `;
 
-            Then, try deploying again.
+          break;
+
+        case 'mailchimp_audience':
+          // prettier-ignore
+          body = stripIndent`
+            Here's how to found your Audience ID:
+
+              • Log in to your Mailchimp account
+              • Click the ${chalk.bold.cyan('Audience')} tab at the top
+              • Navigate to ${chalk.bold.cyan('Manage Audience › Settings')}
+              • Click ${chalk.bold.cyan('Audience name and defaults')}
+              • Locate the value under the "Audience ID" heading
+
+            Copy the ID and run the following command:
+
+              ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.secret_key)} ${chalk.yellow('<paste-audience-id-here>')}
           `;
 
           break;
@@ -92,8 +109,6 @@ const errorMessage = error => {
             Run the following command to add this secret:
 
               ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.secret_key)} ${chalk.yellow('<enter-the-value-here>')}
-
-            Then, try deploying again.
           `;
           break;
       }
