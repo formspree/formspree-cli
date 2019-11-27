@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0
+
+- Add special error message for missing Mailchimp audience ID.
+
 ## 0.6.0
 
 - Improve helpfulness of error messages.
