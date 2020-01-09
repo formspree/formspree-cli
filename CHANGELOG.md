@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.0
+
+- Automatically install the shim package (if applicable).
+- Accept a `--no-shim` argument to skip installing it.
+
 ## 0.7.0
 
 - Add special error message for missing Mailchimp audience ID.
