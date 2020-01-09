@@ -4,6 +4,7 @@ const ora = require('ora');
 const version = require('../../package.json').version;
 const log = require('../log');
 const messages = require('../messages');
+const shim = require('../shim');
 const { stripIndent } = require('common-tags');
 
 const indent = (text, depth = 2) => {
@@ -147,10 +148,16 @@ exports.builder = yargs => {
     describe: 'Path to the local `statickit.json` file',
     default: 'statickit.json'
   });
+
+  yargs.option('shim', {
+    describe: 'Install the functions shim package',
+    type: 'boolean',
+    default: true
+  });
 };
 
 exports.handler = async args => {
-  const rawConfig = deploy.getRawConfig(args);
+  const rawConfig = args.config || deploy.getRawConfig(args);
   const endpoint = args.endpoint || 'https://api.statickit.com';
   const userAgent = `@statickit/cli@${version}`;
   const spinner = ora(chalk.gray('Deploying...'));
@@ -171,7 +178,7 @@ exports.handler = async args => {
     return;
   }
 
-  const key = deploy.getDeployKey(args);
+  const key = args.key || deploy.getDeployKey(args);
 
   if (!key) {
     messages.authRequired();
@@ -196,6 +203,25 @@ exports.handler = async args => {
         log.success(
           `Deployment succeeded ${chalk.gray(`(${response.data.id})`)}`
         );
+
+        if (args.shim && response.data.shim) {
+          const shimSpinner = ora(chalk.gray('Installing functions...'));
+          shimSpinner.start();
+
+          try {
+            await shim.install(response.data.shim);
+            shimSpinner.stop();
+            log.success(
+              `Functions installed ${chalk.gray(`(${response.data.shim})`)}`
+            );
+          } catch (error) {
+            shimSpinner.stop();
+            log.error('Functions failed to install');
+            console.error(error);
+            process.exitCode = 1;
+          }
+        }
+
         return;
 
       case 401:
