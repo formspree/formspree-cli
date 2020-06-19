@@ -15,7 +15,7 @@ const humanizeField = name => {
   }
 };
 
-exports.command = 'update <name> <value>';
+exports.command = 'update <name> [value]';
 exports.desc = 'Updates a secret value';
 
 exports.builder = yargs => {
