@@ -15,7 +15,7 @@ const humanizeField = name => {
   }
 };
 
-exports.command = 'add <name> <value>';
+exports.command = 'add <name> [value]';
 exports.desc = 'Adds a secret';
 
 exports.builder = yargs => {
@@ -34,6 +34,8 @@ exports.handler = async args => {
   const deployKey = deploy.getDeployKey(args);
   const endpoint = args.endpoint || 'https://api.statickit.com';
   const userAgent = `@statickit/cli@${version}`;
+
+  console.log(args);
 
   if (!deployKey) {
     messages.authRequired();
