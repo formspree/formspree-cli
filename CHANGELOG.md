@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0
+
+- Fix option parsing to support dashes (#6)
+
 ## 0.8.0
 
 - Automatically install the shim package (if applicable).
