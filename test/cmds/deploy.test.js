@@ -26,6 +26,7 @@ afterEach(() => {
   console.log.mockRestore();
   console.error.mockRestore();
   shim.install.mockReset();
+  deploy.request.mockReset();
 });
 
 it('sends a deploy request with the right params', async () => {
@@ -220,4 +221,79 @@ it('throws an error if undefined env vars are referenced', async () => {
 
   await cmd.handler({ config: JSON.stringify(config), key: 'xxx' });
   expect(console.error.mock.calls).toMatchSnapshot();
+});
+
+it('throws an error if apiKey properties do not point to env vars', async () => {
+  const config = {
+    forms: {
+      contactForm: {
+        actions: [
+          {
+            apiKey: 'my-inline-key'
+          }
+        ]
+      }
+    }
+  };
+
+  await cmd.handler({ config: JSON.stringify(config), key: 'xxx' });
+  expect(console.error.mock.calls).toMatchSnapshot();
+  expect(console.log.mock.calls).toMatchSnapshot();
+});
+
+it('throws an error if apiSecret properties do not point to env vars', async () => {
+  const config = {
+    forms: {
+      contactForm: {
+        actions: [
+          {
+            apiSecret: 'my-inline-key'
+          }
+        ]
+      }
+    }
+  };
+
+  await cmd.handler({ config: JSON.stringify(config), key: 'xxx' });
+  expect(console.error.mock.calls).toMatchSnapshot();
+  expect(console.log.mock.calls).toMatchSnapshot();
+});
+
+it('throws an error if secretKey properties do not point to env vars', async () => {
+  const config = {
+    forms: {
+      contactForm: {
+        actions: [
+          {
+            secretKey: 'my-inline-key'
+          }
+        ]
+      }
+    }
+  };
+
+  await cmd.handler({ config: JSON.stringify(config), key: 'xxx' });
+  expect(console.error.mock.calls).toMatchSnapshot();
+  expect(console.log.mock.calls).toMatchSnapshot();
+});
+
+it('skips validating inline secrets with force flag', async () => {
+  const config = {
+    apiKey: 'my-inline-key'
+  };
+
+  deploy.request.mockImplementation(params => {
+    expect(params.config.apiKey).toBe('my-inline-key');
+    return Promise.resolve({
+      status: 200,
+      data: { id: 'xxxx-xxxx-xxxx', shim: null }
+    });
+  });
+
+  await cmd.handler({
+    config: JSON.stringify(config),
+    key: 'xxx',
+    force: true
+  });
+  expect(console.log.mock.calls).toMatchSnapshot();
 });
