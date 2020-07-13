@@ -1,18 +1,18 @@
 {
-  "name": "@statickit/cli",
+  "name": "@formspree/cli",
   "version": "0.9.0",
-  "description": "The StaticKit command line interface",
+  "description": "The Formspree command line interface",
   "keywords": [
     "dotenv",
-    "statickit"
+    "formspree"
   ],
-  "homepage": "https://github.com/unstacked/statickit-cli#readme",
+  "homepage": "https://github.com/formspree/formspree-cli#readme",
   "bugs": {
-    "url": "https://github.com/unstacked/statickit-cli/issues"
+    "url": "https://github.com/formspree/formspree-cli/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/unstacked/statickit-cli.git"
+    "url": "https://github.com/formspree/formspree-cli.git"
   },
   "license": "MIT",
   "author": "Derrick Reimer",
@@ -20,7 +20,7 @@
     "src"
   ],
   "bin": {
-    "statickit": "bin/statickit"
+    "formspree": "bin/statickit"
   },
   "scripts": {
     "release": "np",
@@ -65,7 +65,7 @@
     "node": ">= 8"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "np": {
     "yarn": false
