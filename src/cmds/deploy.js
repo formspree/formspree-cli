@@ -4,7 +4,6 @@ const ora = require('ora');
 const version = require('../../package.json').version;
 const log = require('../log');
 const messages = require('../messages');
-const shim = require('../shim');
 const env = require('process').env;
 const { stripIndent } = require('common-tags');
 const { traverse } = require('../traverse');
@@ -157,12 +156,6 @@ exports.builder = yargs => {
     describe: 'Path to the local `statickit.json` file',
     default: 'statickit.json'
   });
-
-  yargs.option('shim', {
-    describe: 'Install the functions shim package',
-    type: 'boolean',
-    default: true
-  });
 };
 
 exports.handler = async args => {
@@ -274,24 +267,6 @@ exports.handler = async args => {
         log.success(
           `Deployment succeeded ${chalk.gray(`(${response.data.id})`)}`
         );
-
-        if (args.shim && response.data.shim) {
-          const shimSpinner = ora(chalk.gray('Installing functions...'));
-          shimSpinner.start();
-
-          try {
-            await shim.install(response.data.shim);
-            shimSpinner.stop();
-            log.success(
-              `Functions installed ${chalk.gray(`(${response.data.shim})`)}`
-            );
-          } catch (error) {
-            shimSpinner.stop();
-            log.error('Functions failed to install');
-            console.error(error);
-            process.exitCode = 1;
-          }
-        }
 
         return;
 

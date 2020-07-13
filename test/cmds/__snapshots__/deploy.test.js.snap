@@ -136,44 +136,6 @@ Array [
 ]
 `;
 
-exports[`does not install the shim if --no-shim is used 1`] = `
-Array [
-  Array [
-    "[32m✔[39m [32mDeployment succeeded [90m(xxxx-xxxx-xxxx)[32m[39m",
-  ],
-]
-`;
-
-exports[`does not install the shim if not present in the response 1`] = `
-Array [
-  Array [
-    "[32m✔[39m [32mDeployment succeeded [90m(xxxx-xxxx-xxxx)[32m[39m",
-  ],
-]
-`;
-
-exports[`installs the shim if present in the response 1`] = `
-Array [
-  Array [
-    "[32m✔[39m [32mDeployment succeeded [90m(xxxx-xxxx-xxxx)[32m[39m",
-  ],
-  Array [
-    "[32m✔[39m [32mFunctions installed [90m(shim-ref)[32m[39m",
-  ],
-]
-`;
-
-exports[`outputs shim install errors 1`] = `
-Array [
-  Array [
-    "[31m[1m✕[22m[39m [31m[1mFunctions failed to install[22m[39m",
-  ],
-  Array [
-    [Error: error installing package],
-  ],
-]
-`;
-
 exports[`sends a deploy request with the right params 1`] = `
 Array [
   Array [
