@@ -181,3 +181,19 @@ Array [
   ],
 ]
 `;
+
+exports[`substitutes all referenced environment variables 1`] = `
+Array [
+  Array [
+    "[32m✔[39m [32mDeployment succeeded [90m(xxxx-xxxx-xxxx)[32m[39m",
+  ],
+]
+`;
+
+exports[`throws an error if undefined env vars are referenced 1`] = `
+Array [
+  Array [
+    "[31m[1m✕[22m[39m [31m[1mThe following environment variables were referenced but are not defined: MY_SECRET_1, API_KEY_1[22m[39m",
+  ],
+]
+`;

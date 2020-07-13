@@ -1,7 +1,9 @@
 const deploy = require('@statickit/deploy');
 const version = require('../../package.json').version;
 
-jest.mock('process', () => ({ env: {} }));
+jest.mock('process', () => ({
+  env: { MY_SECRET: 'pa$$w0rd', API_KEY: '12345' }
+}));
 jest.mock('@statickit/deploy');
 jest.mock('../../src/shim');
 
@@ -188,5 +190,34 @@ it('displays general validation errors', async () => {
   });
 
   await cmd.handler({ config: '{}', key: 'xxx' });
+  expect(console.error.mock.calls).toMatchSnapshot();
+});
+
+it('substitutes all referenced environment variables', async () => {
+  deploy.request.mockImplementation(params => {
+    expect(params.config.mySecret).toBe('pa$$w0rd');
+    expect(params.config.apiKey).toBe('12345');
+    return Promise.resolve({
+      status: 200,
+      data: { id: 'xxxx-xxxx-xxxx', shim: null }
+    });
+  });
+
+  const config = {
+    mySecret: '$MY_SECRET',
+    apiKey: '$API_KEY'
+  };
+
+  await cmd.handler({ config: JSON.stringify(config), key: 'xxx' });
+  expect(console.log.mock.calls).toMatchSnapshot();
+});
+
+it('throws an error if undefined env vars are referenced', async () => {
+  const config = {
+    mySecret: '$MY_SECRET_1',
+    apiKey: '$API_KEY_1'
+  };
+
+  await cmd.handler({ config: JSON.stringify(config), key: 'xxx' });
   expect(console.error.mock.calls).toMatchSnapshot();
 });
