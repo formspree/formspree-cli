@@ -5,125 +5,16 @@ const version = require('../../package.json').version;
 const log = require('../log');
 const messages = require('../messages');
 const env = require('process').env;
-const { stripIndent } = require('common-tags');
 const { traverse } = require('../traverse');
-
-const indent = (text, depth = 2) => {
-  return text
-    .split('\n')
-    .map(line => `${' '.repeat(depth)}${line}`)
-    .join('\n');
-};
 
 const printErrors = errors => {
   console.error('');
-  errors.forEach(printError);
+  errors.forEach((error, idx) => {
+    console.error(
+      `  ${`${idx + 1})`} ${chalk.cyan(error.field)} ${error.message}`
+    );
+  });
   console.error('');
-};
-
-const printError = (error, idx) => {
-  const [title, body] = errorMessage(error);
-  console.error(`  ${`${idx + 1})`} ${title}`);
-
-  if (body) {
-    console.error('');
-    console.error(indent(body, 7));
-    console.error('');
-    console.error('');
-  }
-};
-
-const errorMessage = error => {
-  let title;
-  let body;
-
-  switch (error.code) {
-    case 'SECRET_REFERENCE_REQUIRED':
-      let fieldName = error.field.split('.').slice(-1)[0];
-      let exampleValue = error.properties.example_value;
-      let givenValue = error.properties.given_value || 'pa$$w0rd';
-
-      // prettier-ignore
-      title = `${log.variable(error.field)} must reference a secret (e.g. ${log.variable(`@${exampleValue}`)})`;
-
-      // prettier-ignore
-      body = stripIndent`
-        This field must reference a secret instead of a raw value, 
-        because it's too sensitive to commit to version control.
-
-        ${chalk.yellow.bold('-- Instructions ----------------------------------------------------------')}
-
-        First, choose a name for this value and run the following command:
-
-            ${chalk.gray('$')} statickit secrets add ${chalk.cyan(`${exampleValue}`)} ${chalk.green(`"${givenValue}"`)}
-
-        Then, reference your secret like this (notice the @-symbol prefix):
-
-            {
-              ${chalk.green(`"${fieldName}"`)}: ${chalk.green(`"@${exampleValue}"`)}
-            }
-      `;
-      break;
-
-    case 'SECRET_REQUIRED':
-      // prettier-ignore
-      title = `The secret ${log.variable('@' + error.properties.secret_key)} is not defined yet ${chalk.gray(`(${error.field})`)}`;
-
-      switch (error.properties.secret_type) {
-        case 'mailchimp_api_key':
-          // prettier-ignore
-          body = stripIndent`
-            Here's where to find your API key:
-
-              • Log in to your Mailchimp account
-              • Open the menu with your avatar in the upper right
-              • Navigate to ${chalk.bold.cyan('Profile › Extras › API keys')}
-              • Under "Your API keys", click ${chalk.bold.cyan('Create A Key')}
-
-            Copy the generated key and run the following command:
-
-              ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.secret_key)} ${chalk.yellow('<paste-api-key-here>')}
-          `;
-
-          break;
-
-        case 'mailchimp_audience':
-          // prettier-ignore
-          body = stripIndent`
-            Here's how to found your Audience ID:
-
-              • Log in to your Mailchimp account
-              • Click the ${chalk.bold.cyan('Audience')} tab at the top
-              • Navigate to ${chalk.bold.cyan('Manage Audience › Settings')}
-              • Click ${chalk.bold.cyan('Audience name and defaults')}
-              • Locate the value under the "Audience ID" heading
-
-            Copy the ID and run the following command:
-
-              ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.secret_key)} ${chalk.yellow('<paste-audience-id-here>')}
-          `;
-
-          break;
-
-        default:
-          // prettier-ignore
-          body = stripIndent`
-            Run the following command to add this secret:
-
-              ${chalk.gray('$')} statickit secrets add ${chalk.cyan(error.properties.secret_key)} ${chalk.yellow('<enter-the-value-here>')}
-          `;
-          break;
-      }
-
-      break;
-
-    default:
-      title = `${chalk.cyan(error.field)} ${error.message}`;
-      body = '';
-      break;
-  }
-
-  return [title, body];
 };
 
 exports.command = 'deploy';

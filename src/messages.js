@@ -34,36 +34,4 @@ const authRequired = () => {
   console.error('');
 };
 
-const secretAlreadyExists = (name, value, key) => {
-  log.error('Secret already exists');
-  console.error('');
-
-  // prettier-ignore
-  console.error(stripIndent`
-    If you'd like to update it, run the following command instead:
-
-      ${chalk.gray('$')} statickit secrets update ${name} ${value} -k ${key}
-  `);
-
-  console.error('');
-};
-
-const secretKeyInvalid = () => {
-  log.error('Secret name is invalid');
-  console.error('');
-
-  // prettier-ignore
-  console.error(stripIndent`
-    Secret names can contain letters, numbers, and dashes. 
-    You should typically use kebab-case.
-
-    ${chalk.yellow.bold('-- Examples -----------------------------------------------')}
-      
-      ${chalk.gray('mailchimp-api-key')}
-      ${chalk.gray('stripe-secret-key')}
-  `);
-
-  console.error('');
-};
-
-module.exports = { authRequired, secretAlreadyExists, secretKeyInvalid };
+module.exports = { authRequired };
