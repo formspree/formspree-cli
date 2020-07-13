@@ -5,7 +5,9 @@ const version = require('../../package.json').version;
 const log = require('../log');
 const messages = require('../messages');
 const shim = require('../shim');
+const env = require('process').env;
 const { stripIndent } = require('common-tags');
+const { traverse } = require('../traverse');
 
 const indent = (text, depth = 2) => {
   return text
@@ -144,6 +146,13 @@ exports.builder = yargs => {
     describe: 'API endpoint'
   });
 
+  yargs.option('force', {
+    alias: 'f',
+    describe: 'Skip verifying that secrets reference environment variables',
+    type: 'boolean',
+    default: false
+  });
+
   yargs.option('file', {
     describe: 'Path to the local `statickit.json` file',
     default: 'statickit.json'
@@ -168,10 +177,72 @@ exports.handler = async args => {
     return;
   }
 
+  let parsedRawConfig;
+
+  try {
+    parsedRawConfig = JSON.parse(rawConfig);
+  } catch (err) {
+    log.error('Configuration could not be parsed');
+    process.exitCode = 1;
+    return;
+  }
+
+  // Traverse the config and validate that certain specially-named keys
+  // reference environment variables.
+  let invalidKeys = [];
+  const sensitiveKeys = ['apiKey', 'apiSecret', 'secretKey'];
+
+  traverse(parsedRawConfig, (key, value) => {
+    if (
+      sensitiveKeys.indexOf(key) > -1 &&
+      !value.match(/^\$([A-Za-z0-9_]+)$/)
+    ) {
+      invalidKeys.push(key);
+    }
+  });
+
+  if (!args.force && invalidKeys.length > 0) {
+    log.error(
+      `The following properties must reference environment variables: ${invalidKeys.join(
+        ', '
+      )}`
+    );
+
+    log.meta('To override this, use the `-f` flag.');
+
+    process.exitCode = 1;
+    return;
+  }
+
+  // Replace environment variable $-references with the actual values
+  // If the environment variable is not defined, store in an array an present
+  // an error to the user.
+  let undefinedEnvRefs = [];
+
+  const rawConfigWithSecrets = rawConfig.replace(
+    /\$([A-Za-z0-9_]+)/gi,
+    (_match, variableName) => {
+      let value = env[variableName];
+      if (value) return value;
+      undefinedEnvRefs.push(variableName);
+    }
+  );
+
+  if (undefinedEnvRefs.length > 0) {
+    log.error(
+      `The following environment variables were referenced but are not defined: ${undefinedEnvRefs.join(
+        ', '
+      )}`
+    );
+
+    process.exitCode = 1;
+    return;
+  }
+
   let config;
 
   try {
-    config = JSON.parse(rawConfig);
+    config = JSON.parse(rawConfigWithSecrets);
   } catch (err) {
     log.error('Configuration could not be parsed');
     process.exitCode = 1;

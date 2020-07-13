@@ -181,3 +181,75 @@ Array [
   ],
 ]
 `;
+
+exports[`skips validating inline secrets with force flag 1`] = `
+Array [
+  Array [
+    "[32m✔[39m [32mDeployment succeeded [90m(xxxx-xxxx-xxxx)[32m[39m",
+  ],
+]
+`;
+
+exports[`substitutes all referenced environment variables 1`] = `
+Array [
+  Array [
+    "[32m✔[39m [32mDeployment succeeded [90m(xxxx-xxxx-xxxx)[32m[39m",
+  ],
+]
+`;
+
+exports[`throws an error if apiKey properties do not point to env vars 1`] = `
+Array [
+  Array [
+    "[31m[1m✕[22m[39m [31m[1mThe following properties must reference environment variables: apiKey[22m[39m",
+  ],
+]
+`;
+
+exports[`throws an error if apiKey properties do not point to env vars 2`] = `
+Array [
+  Array [
+    "[90m>[39m [90mTo override this, use the \`-f\` flag.[39m",
+  ],
+]
+`;
+
+exports[`throws an error if apiSecret properties do not point to env vars 1`] = `
+Array [
+  Array [
+    "[31m[1m✕[22m[39m [31m[1mThe following properties must reference environment variables: apiSecret[22m[39m",
+  ],
+]
+`;
+
+exports[`throws an error if apiSecret properties do not point to env vars 2`] = `
+Array [
+  Array [
+    "[90m>[39m [90mTo override this, use the \`-f\` flag.[39m",
+  ],
+]
+`;
+
+exports[`throws an error if secretKey properties do not point to env vars 1`] = `
+Array [
+  Array [
+    "[31m[1m✕[22m[39m [31m[1mThe following properties must reference environment variables: secretKey[22m[39m",
+  ],
+]
+`;
+
+exports[`throws an error if secretKey properties do not point to env vars 2`] = `
+Array [
+  Array [
+    "[90m>[39m [90mTo override this, use the \`-f\` flag.[39m",
+  ],
+]
+`;
+
+exports[`throws an error if undefined env vars are referenced 1`] = `
+Array [
+  Array [
+    "[31m[1m✕[22m[39m [31m[1mThe following environment variables were referenced but are not defined: MY_SECRET_1, API_KEY_1[22m[39m",
+  ],
+]
+`;
