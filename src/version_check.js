@@ -10,7 +10,7 @@ module.exports = async () => {
   spinner.start();
 
   try {
-    const manifest = await pacote.manifest('@statickit/cli@latest');
+    const manifest = await pacote.manifest('@formspree/cli@latest');
     const newVersion = manifest.version;
     spinner.stop();
 
@@ -21,7 +21,7 @@ module.exports = async () => {
         `${chalk.yellow.bold('Update Available!')} ${chalk.gray(
           `v${installedVersion} ➜ v${newVersion}`
         )}\n  Run ${log.variable(
-          'npm i -g @statickit/cli@latest'
+          'npm i -g @formspree/cli@latest'
         )} to update.\n`
       );
     }

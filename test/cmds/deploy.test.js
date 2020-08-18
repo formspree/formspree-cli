@@ -1,10 +1,10 @@
-const deploy = require('@statickit/deploy');
+const deploy = require('@formspree/deploy');
 const version = require('../../package.json').version;
 
 jest.mock('process', () => ({
   env: { MY_SECRET: 'pa$$w0rd', API_KEY: '12345' }
 }));
-jest.mock('@statickit/deploy');
+jest.mock('@formspree/deploy');
 
 jest.mock('ora', () => {
   return () => ({
@@ -30,7 +30,7 @@ it('sends a deploy request with the right params', async () => {
   deploy.request.mockImplementation(params => {
     expect(params.config).toStrictEqual({});
     expect(params.key).toBe('xxx');
-    expect(params.userAgent).toBe(`@statickit/cli@${version}`);
+    expect(params.userAgent).toBe(`@formspree/cli@${version}`);
 
     return Promise.resolve({ status: 200, data: { id: 'xxxx-xxxx-xxxx' } });
   });

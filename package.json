@@ -42,8 +42,7 @@
     ]
   },
   "dependencies": {
-    "@statickit/deploy": "^0.3.0",
-    "@statickit/functions": "github:unstacked/statickit-functions#37679bcf-8da7-4b23-842b-2eac5026a269",
+    "@formspree/deploy": "github:formspree/formspree-deploy#master",
     "axios": "^0.19.0",
     "chalk": "^2.4.2",
     "common-tags": "^1.8.0",

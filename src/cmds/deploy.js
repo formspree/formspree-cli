@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const deploy = require('@statickit/deploy');
+const deploy = require('@formspree/deploy');
 const ora = require('ora');
 const version = require('../../package.json').version;
 const log = require('../log');
@@ -44,15 +44,15 @@ exports.builder = yargs => {
   });
 
   yargs.option('file', {
-    describe: 'Path to the local `statickit.json` file',
-    default: 'statickit.json'
+    describe: 'Path to the local `formspree.json` file',
+    default: 'formspree.json'
   });
 };
 
 exports.handler = async args => {
   const rawConfig = args.config || deploy.getRawConfig(args);
-  const endpoint = args.endpoint || 'https://api.statickit.com';
-  const userAgent = `@statickit/cli@${version}`;
+  const endpoint = args.endpoint || 'https://formspree-cli.herokuapp.com';
+  const userAgent = `@formspree/cli@${version}`;
   const spinner = ora(chalk.gray('Deploying...'));
 
   if (!rawConfig) {
