@@ -20,7 +20,7 @@
     "src"
   ],
   "bin": {
-    "formspree": "bin/statickit"
+    "formspree": "bin/formspree"
   },
   "scripts": {
     "release": "np",
