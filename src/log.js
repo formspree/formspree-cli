@@ -53,7 +53,7 @@ const error = msg => {
  * Logs the CLI preamble message.
  */
 const preamble = () => {
-  meta(`StaticKit CLI v${version}`);
+  meta(`Formspree CLI v${version}`);
 };
 
 /**

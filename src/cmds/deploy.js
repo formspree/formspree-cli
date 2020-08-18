@@ -18,7 +18,7 @@ const printErrors = errors => {
 };
 
 exports.command = 'deploy';
-exports.describe = 'Deploys statickit.json';
+exports.describe = 'Deploys formspree.json';
 
 exports.builder = yargs => {
   yargs.option('config', {

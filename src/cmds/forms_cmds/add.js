@@ -6,8 +6,8 @@ exports.desc = 'Adds a new form to config';
 
 exports.builder = yargs => {
   yargs.option('file', {
-    describe: 'Path to the local `statickit.json` file',
-    default: 'statickit.json'
+    describe: 'Path to the local `formspree.json` file',
+    default: 'formspree.json'
   });
 };
 

@@ -14,7 +14,7 @@ const readConfig = file => {
     if (err.code === 'ENOENT') {
       return {};
     } else {
-      logError('statickit.json could not be parsed');
+      logError('formspree.json could not be parsed');
       throw err;
     }
   }

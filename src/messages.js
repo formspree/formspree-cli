@@ -12,20 +12,20 @@ const authRequired = () => {
     There are couple ways to use your key:
 
     - Use the ${log.variable('-k')} flag, or
-    - Set the ${log.variable('STATICKIT_DEPLOY_KEY')} env variable
+    - Set the ${log.variable('FORMSPREE_DEPLOY_KEY')} env variable
 
     ${chalk.yellow.bold('-- Examples -----------------------------------------------')}
 
     The inline method looks like this:
 
-      ${chalk.gray('$')} statickit deploy ${chalk.cyan('-k')} ${chalk.yellow('<your-deploy-key>')}
+      ${chalk.gray('$')} formspree deploy ${chalk.cyan('-k')} ${chalk.yellow('<your-deploy-key>')}
 
     For convenience, you can add it to a ${log.variable('.env')} file.
     That way, you don't have to copy/paste it every time
     you run a command:
 
-      ${chalk.gray('$')} echo "STATICKIT_DEPLOY_KEY=${chalk.yellow('<your-deploy-key>')}" >> .env
-      ${chalk.gray('$')} statickit deploy
+      ${chalk.gray('$')} echo "FORMSPREE_DEPLOY_KEY=${chalk.yellow('<your-deploy-key>')}" >> .env
+      ${chalk.gray('$')} formspree deploy
 
     Just be sure to add ${log.variable('.env')} to your ${log.variable('.gitignore')} file,
     so your deploy key does not end up in version control.
