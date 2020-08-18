@@ -1,13 +1,13 @@
-# StaticKit CLI [![CircleCI](https://circleci.com/gh/unstacked/statickit-cli.svg?style=svg)](https://circleci.com/gh/unstacked/statickit-cli)
+# Formspree CLI
 
-The command line interface for [StaticKit](https://statickit.com).
+The command line interface for [Formspree](https://formspree.io).
 
 ## Installation
 
 Run the following to install on your machine:
 
 ```bash
-npm i -g @statickit/cli
+npm i -g @formspree/cli
 ```
 
 ## Releasing
