@@ -32,25 +32,45 @@ it('sends a deploy request with the right params', async () => {
     expect(params.key).toBe('xxx');
     expect(params.userAgent).toBe(`@formspree/cli@${version}`);
 
-    return Promise.resolve({ status: 200, data: { id: 'xxxx-xxxx-xxxx' } });
+    return Promise.resolve({
+      status: 200,
+      data: { id: 'xxxx-xxxx-xxxx', log: ['Added contact form'] }
+    });
   });
 
   await cmd.handler({ config: '{}', key: 'xxx' });
   expect(console.log.mock.calls).toMatchSnapshot();
 });
 
-it('displays general validation errors', async () => {
+it('displays general errors', async () => {
   deploy.request.mockImplementation(_params => {
     return Promise.resolve({
       status: 422,
       data: {
-        id: 'xxxx-xxxx-xxxx',
+        code: 'CONFIG_SYNTAX_ERROR',
         errors: [
           {
-            code: 'REQUIRED',
-            field: 'name',
-            message: 'is required',
-            properties: {}
+            message: 'JSON parsing error'
+          }
+        ]
+      }
+    });
+  });
+
+  await cmd.handler({ config: '{}', key: 'xxx' });
+  expect(console.error.mock.calls).toMatchSnapshot();
+});
+
+it('displays validation errors', async () => {
+  deploy.request.mockImplementation(_params => {
+    return Promise.resolve({
+      status: 422,
+      data: {
+        code: 'CONFIG_VALIDATION_ERROR',
+        errors: [
+          {
+            field: 'foo.bar.baz',
+            message: 'is required'
           }
         ]
       }

@@ -7,14 +7,36 @@ const messages = require('../messages');
 const env = require('process').env;
 const { traverse } = require('../traverse');
 
-const printErrors = errors => {
-  console.error('');
-  errors.forEach((error, idx) => {
-    console.error(
-      `  ${`${idx + 1})`} ${chalk.cyan(error.field)} ${error.message}`
-    );
+const printErrors = ({ code, errors }) => {
+  switch (code) {
+    case 'CONFIG_VALIDATION_ERROR':
+      console.error('');
+      errors.forEach((error, idx) => {
+        console.error(
+          `  ${`${idx + 1})`} ${chalk.cyan(error.field)} ${error.message}`
+        );
+      });
+      console.error('');
+      break;
+
+    default:
+      console.error('');
+      errors.forEach((error, idx) => {
+        console.error(`  ${`${idx + 1})`} ${error.message}`);
+      });
+      console.error('');
+      break;
+  }
+};
+
+const printDeployLog = ({ log }) => {
+  if (!log) return;
+
+  console.log('');
+  log.forEach((item, idx) => {
+    console.log(`  ${`${idx + 1})`} ${item}`);
   });
-  console.error('');
+  console.log('');
 };
 
 exports.command = 'deploy';
@@ -158,7 +180,7 @@ exports.handler = async args => {
         log.success(
           `Deployment succeeded ${chalk.gray(`(${response.data.id})`)}`
         );
-
+        printDeployLog(response.data);
         return;
 
       case 401:
@@ -167,8 +189,8 @@ exports.handler = async args => {
         return;
 
       case 422:
-        log.error(`Deployment failed ${chalk.gray(`(${response.data.id})`)}`);
-        printErrors(response.data.errors);
+        log.error(`Deployment failed`);
+        printErrors(response.data);
         process.exitCode = 1;
         return;
 
@@ -181,6 +203,6 @@ exports.handler = async args => {
     spinner.stop();
     log.error('Deployment failed unexpectedly');
     process.exitCode = 1;
-    throw error;
+    return;
   }
 };

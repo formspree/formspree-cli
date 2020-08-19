@@ -1,15 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`displays general validation errors 1`] = `
+exports[`displays general errors 1`] = `
 Array [
   Array [
-    "[31m[1m✕[22m[39m [31m[1mDeployment failed [90m(xxxx-xxxx-xxxx)[31m[22m[39m",
+    "[31m[1m✕[22m[39m [31m[1mDeployment failed[22m[39m",
   ],
   Array [
     "",
   ],
   Array [
-    "  1) [36mname[39m is required",
+    "  1) JSON parsing error",
+  ],
+  Array [
+    "",
+  ],
+]
+`;
+
+exports[`displays validation errors 1`] = `
+Array [
+  Array [
+    "[31m[1m✕[22m[39m [31m[1mDeployment failed[22m[39m",
+  ],
+  Array [
+    "",
+  ],
+  Array [
+    "  1) [36mfoo.bar.baz[39m is required",
   ],
   Array [
     "",
@@ -21,6 +38,15 @@ exports[`sends a deploy request with the right params 1`] = `
 Array [
   Array [
     "[32m✔[39m [32mDeployment succeeded [90m(xxxx-xxxx-xxxx)[32m[39m",
+  ],
+  Array [
+    "",
+  ],
+  Array [
+    "  1) Added contact form",
+  ],
+  Array [
+    "",
   ],
 ]
 `;
