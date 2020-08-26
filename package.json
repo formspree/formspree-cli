@@ -42,7 +42,7 @@
     ]
   },
   "dependencies": {
-    "@formspree/deploy": "github:formspree/formspree-deploy#master",
+    "@formspree/deploy": "github:formspree/formspree-deploy#2508771",
     "axios": "^0.19.0",
     "chalk": "^2.4.2",
     "common-tags": "^1.8.0",
