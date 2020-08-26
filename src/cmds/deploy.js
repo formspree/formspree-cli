@@ -73,7 +73,7 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
   const rawConfig = args.config || deploy.getRawConfig(args);
-  const endpoint = args.endpoint || 'https://formspree-cli.herokuapp.com';
+  const endpoint = args.endpoint || 'https://formspree-react.herokuapp.com';
   const userAgent = `@formspree/cli@${version}`;
   const spinner = ora(chalk.gray('Deploying...'));
 
