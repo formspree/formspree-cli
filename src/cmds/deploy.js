@@ -73,7 +73,7 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
   const rawConfig = args.config || deploy.getRawConfig(args);
-  const endpoint = args.endpoint || 'https://formspree-react.herokuapp.com';
+  const endpoint = args.endpoint || 'https://formspree.io';
   const userAgent = `@formspree/cli@${version}`;
   const spinner = ora(chalk.gray('Deploying...'));
 
@@ -96,7 +96,7 @@ exports.handler = async args => {
   // Traverse the config and validate that certain specially-named keys
   // reference environment variables.
   let invalidKeys = [];
-  const sensitiveKeys = ['apiKey', 'apiSecret', 'secretKey'];
+  const sensitiveKeys = ['apiKey', 'apiSecret', 'secretKey', 'apiToken'];
 
   traverse(parsedRawConfig, (key, value) => {
     if (
