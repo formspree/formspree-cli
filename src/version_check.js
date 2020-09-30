@@ -21,7 +21,7 @@ module.exports = async () => {
         `${chalk.yellow.bold('Update Available!')} ${chalk.gray(
           `v${installedVersion} ➜ v${newVersion}`
         )}\n  Run ${log.variable(
-          'npm i -g @formspree/cli@latest'
+          'npm i --save-dev @formspree/cli@latest'
         )} to update.\n`
       );
     }
